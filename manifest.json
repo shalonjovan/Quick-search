@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Quick Web Launcher",
+  "version": "1.0",
+  "description": "Launch websites using prefix search",
+  "permissions": ["tabs", "storage"],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "quick-web-launcher@local.dev"
+    }
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+
+  "commands": {
+    "open-search": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Q"
+      },
+      "description": "Open website search"
+    }
+  }
+}

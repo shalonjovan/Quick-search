@@ -1,6 +1,8 @@
 const searchInput = document.getElementById("search");
 const results = document.getElementById("results");
 
+const editModeCheckbox = document.getElementById("editMode");
+
 const nameInput = document.getElementById("name");
 const keyInput = document.getElementById("key");
 const urlInput = document.getElementById("url");
@@ -10,37 +12,48 @@ const deleteBtn = document.getElementById("delete");
 const status = document.getElementById("status");
 
 let editingKey = null;
+let lastResults = [];
 
-/* ---------- SEARCH BY NAME ---------- */
+/* ---------- SEARCH ---------- */
 
 searchInput.addEventListener("input", async () => {
   const query = searchInput.value.toLowerCase().trim();
   results.innerHTML = "";
+  lastResults = [];
+
   if (!query) return;
 
   const { sites = [] } = await browser.storage.sync.get("sites");
 
-  sites
-    .filter(site => site.name.toLowerCase().startsWith(query))
-    .forEach(site => {
-      const li = document.createElement("li");
-      li.textContent = `${site.name} [${site.key}]`;
+  lastResults = sites.filter(site =>
+    site.name.toLowerCase().startsWith(query)
+  );
 
-      li.onclick = () => {
-        nameInput.value = site.name;
-        keyInput.value = site.key;
-        urlInput.value = site.url;
+  lastResults.forEach(site => {
+    const li = document.createElement("li");
+    li.textContent = `${site.name}${site.key ? ` [${site.key}]` : ""}`;
 
-        editingKey = site.key;
-        deleteBtn.disabled = false;
-        status.textContent = "Editing";
-      };
+    li.onclick = () => {
+      if (editModeCheckbox.checked) {
+        loadForEdit(site);
+      } else {
+        browser.tabs.create({ url: site.url });
+      }
+    };
 
-      results.appendChild(li);
-    });
+    results.appendChild(li);
+  });
 });
 
-/* ---------- POPUP KEYBOARD SHORTCUT ---------- */
+/* ---------- ENTER → OPEN FIRST RESULT ---------- */
+
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && lastResults.length > 0) {
+    browser.tabs.create({ url: lastResults[0].url });
+  }
+});
+
+/* ---------- POPUP SHORTCUT KEYS ---------- */
 
 document.addEventListener("keydown", async (e) => {
   if (e.target.tagName === "INPUT") return;
@@ -65,59 +78,67 @@ saveBtn.addEventListener("click", async () => {
   const key = keyInput.value.trim().toLowerCase();
   const url = urlInput.value.trim();
 
-  if (!name || !key || !url) {
-    status.textContent = "All fields required";
+  if (!name || !url) {
+    status.textContent = "Name and URL are required";
     return;
   }
 
-  if (key.length !== 1) {
-    status.textContent = "Key must be one character";
+  if (key && key.length !== 1) {
+    status.textContent = "Shortcut key must be one character";
     return;
   }
 
   const { sites = [] } = await browser.storage.sync.get("sites");
 
-  const keyUsed = sites.find(
-    s => s.key === key && s.key !== editingKey
-  );
-
-  if (keyUsed) {
-    status.textContent = "Key already in use";
-    return;
+  if (key) {
+    const conflict = sites.find(
+      s => s.key === key && s.key !== editingKey
+    );
+    if (conflict) {
+      status.textContent = "Shortcut key already in use";
+      return;
+    }
   }
 
-  if (editingKey) {
+  if (editingKey !== null) {
     const idx = sites.findIndex(s => s.key === editingKey);
-    sites[idx] = { name, key, url };
+    sites[idx] = { name, key: key || null, url };
   } else {
-    sites.push({ name, key, url });
+    sites.push({ name, key: key || null, url });
   }
 
   await browser.storage.sync.set({ sites });
-
   resetForm("Saved");
 });
 
 /* ---------- DELETE ---------- */
 
 deleteBtn.addEventListener("click", async () => {
-  if (!editingKey) return;
+  if (editingKey === null) return;
 
   const { sites = [] } = await browser.storage.sync.get("sites");
   const filtered = sites.filter(s => s.key !== editingKey);
 
   await browser.storage.sync.set({ sites: filtered });
-
   resetForm("Deleted");
 });
 
 /* ---------- HELPERS ---------- */
 
+function loadForEdit(site) {
+  nameInput.value = site.name;
+  keyInput.value = site.key || "";
+  urlInput.value = site.url;
+
+  editingKey = site.key;
+  deleteBtn.disabled = false;
+  status.textContent = "Editing";
+}
+
 function resetForm(msg = "") {
   nameInput.value = "";
   keyInput.value = "";
   urlInput.value = "";
-
   editingKey = null;
   deleteBtn.disabled = true;
   status.textContent = msg;

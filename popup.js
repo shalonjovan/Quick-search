@@ -4,7 +4,9 @@ const results = document.getElementById("results");
 const nameInput = document.getElementById("name");
 const keyInput = document.getElementById("key");
 const urlInput = document.getElementById("url");
+
 const saveBtn = document.getElementById("save");
+const deleteBtn = document.getElementById("delete");
 const status = document.getElementById("status");
 
 let editingKey = null;
@@ -24,19 +26,21 @@ searchInput.addEventListener("input", async () => {
       const li = document.createElement("li");
       li.textContent = `${site.name} [${site.key}]`;
 
-      // click → load for edit
       li.onclick = () => {
         nameInput.value = site.name;
         keyInput.value = site.key;
         urlInput.value = site.url;
+
         editingKey = site.key;
+        deleteBtn.disabled = false;
+        status.textContent = "Editing";
       };
 
       results.appendChild(li);
     });
 });
 
-/* ---------- POPUP KEYBOARD SHORTCUTS ---------- */
+/* ---------- POPUP KEYBOARD SHORTCUT ---------- */
 
 document.addEventListener("keydown", async (e) => {
   if (e.target.tagName === "INPUT") return;
@@ -52,7 +56,7 @@ document.addEventListener("keydown", async (e) => {
   }
 });
 
-/* ---------- SAVE / EDIT ---------- */
+/* ---------- SAVE ---------- */
 
 saveBtn.addEventListener("click", async () => {
   status.textContent = "";
@@ -71,8 +75,7 @@ saveBtn.addEventListener("click", async () => {
     return;
   }
 
-  const data = await browser.storage.sync.get("sites");
-  const sites = data.sites || [];
+  const { sites = [] } = await browser.storage.sync.get("sites");
 
   const keyUsed = sites.find(
     s => s.key === key && s.key !== editingKey
@@ -92,10 +95,30 @@ saveBtn.addEventListener("click", async () => {
 
   await browser.storage.sync.set({ sites });
 
+  resetForm("Saved");
+});
+
+/* ---------- DELETE ---------- */
+
+deleteBtn.addEventListener("click", async () => {
+  if (!editingKey) return;
+
+  const { sites = [] } = await browser.storage.sync.get("sites");
+  const filtered = sites.filter(s => s.key !== editingKey);
+
+  await browser.storage.sync.set({ sites: filtered });
+
+  resetForm("Deleted");
+});
+
+/* ---------- HELPERS ---------- */
+
+function resetForm(msg = "") {
   nameInput.value = "";
   keyInput.value = "";
   urlInput.value = "";
-  editingKey = null;
 
-  status.textContent = "Saved";
-});
+  editingKey = null;
+  deleteBtn.disabled = true;
+  status.textContent = msg;
+}

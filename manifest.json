@@ -6,10 +6,16 @@
   "permissions": ["tabs", "storage"],
 
   "browser_specific_settings": {
-    "gecko": {
-      "id": "quick-web-launcher@local.dev"
+  "gecko": {
+    "id": "quick-web-launcher@local.dev",
+    "data_collection_permissions": {
+      "required": ["none"],
+      "collects_personal_data": false,
+      "collects_technical_data": false,
+      "collects_interaction_data": false
     }
-  },
+  }
+},
 
   "background": {
     "scripts": ["background.js"]
@@ -18,7 +24,8 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
-
+  
+  
   "commands": {
     "open-search": {
       "suggested_key": {

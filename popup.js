@@ -1,7 +1,9 @@
+// ---------- ELEMENTS ----------
 const searchInput = document.getElementById("search");
 const results = document.getElementById("results");
 
 const editModeCheckbox = document.getElementById("editMode");
+const darkModeToggle = document.getElementById("darkMode");
 
 const nameInput = document.getElementById("name");
 const keyInput = document.getElementById("key");
@@ -11,11 +13,35 @@ const saveBtn = document.getElementById("save");
 const deleteBtn = document.getElementById("delete");
 const status = document.getElementById("status");
 
+// ---------- STATE ----------
 let editingKey = null;
 let lastResults = [];
 
-/* ---------- SEARCH ---------- */
+// ---------- THEME INIT ----------
+(async function initTheme() {
+  const { theme } = await browser.storage.local.get("theme");
 
+  if (theme === "dark") {
+    document.body.classList.add("dark");
+    darkModeToggle.checked = true;
+  } else if (!theme) {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.body.classList.add("dark");
+    }
+  }
+})();
+
+darkModeToggle.addEventListener("change", async () => {
+  if (darkModeToggle.checked) {
+    document.body.classList.add("dark");
+    await browser.storage.local.set({ theme: "dark" });
+  } else {
+    document.body.classList.remove("dark");
+    await browser.storage.local.set({ theme: "light" });
+  }
+});
+
+// ---------- SEARCH ----------
 searchInput.addEventListener("input", async () => {
   const query = searchInput.value.toLowerCase().trim();
   results.innerHTML = "";
@@ -45,16 +71,14 @@ searchInput.addEventListener("input", async () => {
   });
 });
 
-/* ---------- ENTER → OPEN FIRST RESULT ---------- */
-
+// ---------- ENTER → OPEN FIRST ----------
 searchInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && lastResults.length > 0) {
     browser.tabs.create({ url: lastResults[0].url });
   }
 });
 
-/* ---------- POPUP SHORTCUT KEYS ---------- */
-
+// ---------- POPUP SHORTCUT KEYS ----------
 document.addEventListener("keydown", async (e) => {
   if (e.target.tagName === "INPUT") return;
 
@@ -69,8 +93,7 @@ document.addEventListener("keydown", async (e) => {
   }
 });
 
-/* ---------- SAVE ---------- */
-
+// ---------- SAVE ----------
 saveBtn.addEventListener("click", async () => {
   status.textContent = "";
 
@@ -111,8 +134,7 @@ saveBtn.addEventListener("click", async () => {
   resetForm("Saved");
 });
 
-/* ---------- DELETE ---------- */
-
+// ---------- DELETE ----------
 deleteBtn.addEventListener("click", async () => {
   if (editingKey === null) return;
 
@@ -123,8 +145,7 @@ deleteBtn.addEventListener("click", async () => {
   resetForm("Deleted");
 });
 
-/* ---------- HELPERS ---------- */
-
+// ---------- HELPERS ----------
 function loadForEdit(site) {
   nameInput.value = site.name;
   keyInput.value = site.key || "";

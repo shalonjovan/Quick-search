@@ -9,10 +9,7 @@
   "gecko": {
     "id": "quick-web-launcher@local.dev",
     "data_collection_permissions": {
-      "required": ["none"],
-      "collects_personal_data": false,
-      "collects_technical_data": false,
-      "collects_interaction_data": false
+      "required": ["none"]
     }
   }
 },

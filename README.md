@@ -1,6 +1,6 @@
 # Quick Search
 
-Quick Web Launcher is a lightweight, keyboard-driven Firefox browser extension that lets you search, open, and manage websites instantly from a popup.
+Quick Search is a lightweight, keyboard-driven Firefox browser extension that lets you search, open, and manage websites instantly from a popup.
 
 It is designed for speed, minimalism, and privacy — no tracking, no analytics, no external services.
 
@@ -65,7 +65,7 @@ Shortcut keys are validated to prevent duplicates.
 
 ## 🔐 Privacy
 
-Quick Web Launcher does **not**:
+Quick Search does **not**:
 - Collect personal data
 - Collect technical data
 - Track user behavior

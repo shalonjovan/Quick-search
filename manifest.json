@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
-  "name": "Quick Web Launcher",
+  "name": "Quick Search",
   "version": "1.0",
   "description": "Launch websites using prefix search",
   "permissions": ["tabs", "storage"],
 
   "browser_specific_settings": {
   "gecko": {
-    "id": "quick-web-launcher@local.dev",
+    "id": "quick-Search@local.dev",
     "data_collection_permissions": {
       "required": ["none"]
     }

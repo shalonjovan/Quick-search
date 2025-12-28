@@ -1,4 +1,4 @@
-# Quick Web Launcher
+# Quick Search
 
 Quick Web Launcher is a lightweight, keyboard-driven Firefox browser extension that lets you search, open, and manage websites instantly from a popup.
 

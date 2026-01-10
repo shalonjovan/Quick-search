@@ -6,20 +6,20 @@ It is designed for speed, minimalism, and privacy — no tracking, no analytics,
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🔍 **Real-time name-based search**
-- ⏎ **Press Enter to open the first result**
-- 🖱️ **Click any result to open it**
-- ⌨️ **Optional single-key shortcuts** (inside the popup)
-- ✏️ **Edit mode** to add, update, or delete websites
-- 🌙 **Dark mode** (follows system theme + manual toggle)
-- 💾 **All data stored locally** using browser storage
-- 🔐 **Zero data collection**
+-  **Real-time name-based search**
+-  **Press Enter to open the first result**
+-  **Click any result to open it**
+-  **Optional single-key shortcuts** (inside the popup)
+-  **Edit mode** to add, update, or delete websites
+-  **Dark mode** (follows system theme + manual toggle)
+-  **All data stored locally** using browser storage
+-  **Zero data collection**
 
 ---
 
-## ⌨️ How It Works
+## How It Works
 
 1. Open the launcher using the toolbar icon or a keyboard shortcut.
 2. Start typing the **website name**.
@@ -29,7 +29,7 @@ It is designed for speed, minimalism, and privacy — no tracking, no analytics,
 
 ---
 
-## 🧭 Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Action | Key |
 |------|----|
@@ -41,7 +41,7 @@ It is designed for speed, minimalism, and privacy — no tracking, no analytics,
 
 ---
 
-## ✏️ Edit Mode
+## Edit Mode
 
 When **Edit Mode** is enabled:
 - Clicking a site loads it into the editor
@@ -55,7 +55,7 @@ Shortcut keys are validated to prevent duplicates.
 
 ---
 
-## 🌙 Dark Mode
+## Dark Mode
 
 - Automatically follows system/browser theme by default
 - Manual toggle available in the popup
@@ -63,7 +63,7 @@ Shortcut keys are validated to prevent duplicates.
 
 ---
 
-## 🔐 Privacy
+## Privacy
 
 Quick Search does **not**:
 - Collect personal data
